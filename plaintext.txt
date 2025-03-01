@@ -1,0 +1,16 @@
+job-data-analysis/
+│── docker-compose.yml
+│── Dockerfile
+│── requirements.txt
+│── .gitignore
+│── src/
+│   ├── data_scraper.py   # 求人データのスクレイピング
+│   ├── data_cleaner.py   # データクレンジング
+│   ├── data_analysis.py  # 分析・可視化
+│   ├── db_setup.py       # DBのセットアップ
+│   └── config.py         # 設定ファイル
+│── notebooks/
+│   ├── analysis.ipynb    # Jupyter Notebook（データ可視化用）
+│── data/                 # 取得したデータを格納
+│── .env                  # 環境変数（DB設定など）
+│── README.md
