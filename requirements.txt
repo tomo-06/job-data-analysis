@@ -8,3 +8,4 @@ requests
 jupyter
 psycopg2-binary
 webdriver_manager
+lxml
