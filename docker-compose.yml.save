@@ -1,0 +1,36 @@
+services:
+  app:
+    build: .
+    container_name: job_data_analysis
+    volumes:
+      - .:/app
+    ports:
+      - "8888:8888"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+ 
+
+   depends_on:
+      - db
+    command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--allow-root", "--NotebookApp.token=''"]
+
+  db:
+er at "172.31.126.208", port 5433 failed: No route to host (0x00002751/10065) Is the server running on that host and accepting TCP/IP connections?
+q    image: postgres:13
+    container_name: job_data_db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      timeout: 3s
+
+
