@@ -23,9 +23,25 @@ services:
       - "5433:5432"
     volumes:
       - ./pgdata:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d job_data"]
       interval: 10s
       retries: 5
       timeout: 3s
+
+  metabase:
+      image: metabase/metabase
+      container_name: metabase
+      ports:
+        - "3000:3000"
+      depends_on:
+        db:
+          condition: service_healthy
+      environment:
+        - MB_DB_TYPE=postgres
+        - MB_DB_DBNAME=${POSTGRES_DB}
+        - MB_DB_PORT=5432
+        - MB_DB_USER=${POSTGRES_USER}
+        - MB_DB_PASS=${POSTGRES_PASSWORD}
+        - MB_DB_HOST=db

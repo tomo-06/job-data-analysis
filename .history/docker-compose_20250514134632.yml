@@ -1,0 +1,46 @@
+services:
+  app:
+    build: .
+    container_name: job_data_analysis
+    volumes:
+      - .:/app
+    ports:
+      - "8888:8888"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      - db
+    command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--allow-root", "--NotebookApp.token=''"]
+
+  db:
+    image: postgres:13
+    container_name: job_data_db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      timeout: 3s
+
+  metabase:
+      image: metabase/metabase
+      container_name: metabase
+      ports:
+        - "3000:3000"
+      depends_on:
+        - db
+      environment:
+        - MB_DB_TYPE=postgres
+        - MB_DB_DBNAME=${POSTGRES_DB}
+        - MB_DB_PORT=5432
+        - MB_DB_USER=${POSTGRES_USER}
+        - MB_DB_PASS=${POSTGRES_PASSWORD}
+        - MB_DB_HOST=db
