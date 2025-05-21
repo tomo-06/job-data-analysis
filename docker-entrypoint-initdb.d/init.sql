@@ -19,9 +19,10 @@ CREATE TABLE IF NOT EXISTS job_data_analysis.job_listings (
 -- tb_job_postings
 CREATE TABLE IF NOT EXISTS job_data_analysis.tb_job_postings (
 	id SERIAL PRIMARY KEY,
-        company_name VARCHAR(100),
+	company_name VARCHAR(100),
 	location VARCHAR(100),
-	salary INTEGER
+	salary INTEGER,
+	prefecture varchar(10)
 );
 
 
@@ -38,3 +39,17 @@ CREATE TABLE IF NOT EXISTS job_data_analysis.tb_job_postings_skills (
 	skill_id INTEGER REFERENCES job_data_analysis.tb_skills(id) ON DELETE CASCADE,
 	PRIMARY KEY (job_id, skill_id)
 );
+
+
+-- データのインポート
+--/copy job_data_analysis.tb_job_postings(id,company_name, location, salary)
+--FROM '/docker-entrypoint-initdb.d/data/job_tbl_posting_mask.csv'
+--DELIMITER ',' CSV HEADER;
+
+--/copy job_data_analysis.tb_skills(id, keyword)
+--FROM '/docker-entrypoint-initdb.d/data/skills.csv'
+--DELIMITER ',' CSV HEADER;
+
+--/copy job_data_analysis.tb_job_posting_skills(job_id, skill_id)
+--FROM '/docker-entrypoint-initdb.d/data/job_posting_skills.csv'
+--DELIMITER ',' CSV HEADER;
