@@ -42,3 +42,5 @@ CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--allow-root", "--No
 
 # 日本語フォントのインストール
 RUN apt update && apt install -y fonts-ipafont fonts-ipaexfont && apt-get clean
+
+RUN pip install sqlalchemy psycopg2-binary
